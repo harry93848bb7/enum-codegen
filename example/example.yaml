@@ -1,0 +1,16 @@
+types: 
+  - name: 'BusinessRole'
+    description: 'defines a role of a user to a business'
+    enums:
+      - BusinessRoleUnknown
+      - BusinessRoleAdministrator
+      - BusinessRoleDeveloper
+      - BusinessRoleAnalysis
+      - BusinessRoleViewOnly
+
+  - name: 'UserRole'
+    description: 'defines a role of a user within the system'
+    enums:
+      - 'UserRoleUnknown'
+      - 'UserRoleVerified'
+      - 'UserRoleSuspended'

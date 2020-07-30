@@ -1,0 +1,37 @@
+const (
+    {{range $i, $e := .Enums}}{{$e}} {{$.Name}} = {{$i}}
+    {{end}}
+)
+
+// String returns the string form of {{.Name}}, or "" if {{.Name}} is invalid.
+func (x {{.Name}}) String() string {
+	return map[{{.Name}}]string{ {{range $i, $e := .Enums}}{{"\n            "}}{{$e}}: "{{$e}}",{{end}}
+	}[x]
+}
+
+// Scan implements sql.Scanner so {{.Name}} can be read from databases transparently.
+func (x *{{.Name}}) Scan(value interface{}) error {
+	db := value.([]uint8)
+	*x = map[string]{{.Name}}{ {{range $i, $e := .Enums}}{{"\n            "}}"{{$e}}": {{$e}},{{end}}
+	}[string(db)]
+	return nil
+}
+
+// Value implements sql.Valuer so that {{.Name}} can be written to databases transparently.
+func (x {{.Name}}) Value() (driver.Value, error) {
+	return x.String(), nil
+}
+
+// MarshalJSON implements the json.Marshaler interface. Converting {{.Name}} into a string, striping the prefix.
+func (x {{.Name}}) MarshalJSON() ([]byte, error) {
+	return json.Marshal(strings.ReplaceAll(x.String(), "{{.Name}}", ""))
+}
+
+// UnmarshalJSON UnmarshalJSON implements the json.Unmarshaler interface. Adding the prefix and convert into {{.Name}}.
+func (x *{{.Name}}) UnmarshalJSON(b []byte) error {
+	var j string
+	if err := json.Unmarshal(b, &j); err != nil {
+		return err
+	}
+	return x.Scan([]uint8((fmt.Sprintf("{{.Name}}%s", strings.Title(j)))))
+}
