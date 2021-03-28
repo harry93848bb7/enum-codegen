@@ -28,7 +28,7 @@ types:
       - 'UserRoleVerified'
       - 'UserRoleSuspended'
 ```
-3. `enum-codegen -in=example.yaml -out=types.go -package=types`
+3. `enum-codegen --in=example.yaml --out=types.go --package=types`
 <details><summary>Generated Output</summary>
 <p>
 
