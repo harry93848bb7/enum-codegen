@@ -9,6 +9,7 @@ import (
 
 	"github.com/harry93848bb7/enum-codegen"
 	"gopkg.in/yaml.v2"
+	"mvdan.cc/gofumpt/format"
 )
 
 func main() {
@@ -47,15 +48,22 @@ func main() {
 		fmt.Println("Failed to run enum codegen from enum yaml spec file:", err)
 		os.Exit(1)
 	}
+	formatted, err := format.Source(codegen, format.Options{
+		LangVersion: "1.16.2",
+	})
+	if err != nil {
+		fmt.Println("Failed to format generated code:", err)
+		os.Exit(1)
+	}
 	// Write output files
 	if outputFile == "" {
-		fmt.Println(codegen)
+		fmt.Println(string(formatted))
 		return
 	}
 	if !strings.HasSuffix(outputFile, ".gen.go") {
 		outputFile = strings.TrimSuffix(outputFile, ".go") + ".gen.go"
 	}
-	if err := ioutil.WriteFile(outputFile, []byte(codegen), os.ModePerm); err != nil {
+	if err := ioutil.WriteFile(outputFile, formatted, os.ModePerm); err != nil {
 		fmt.Println("Failed to write enum codegen to the specified file:", err)
 		os.Exit(1)
 	}
@@ -65,7 +73,14 @@ func main() {
 			fmt.Println("Failed to run enum test codegen from enum yaml spec file:", err)
 			os.Exit(1)
 		}
-		if err := ioutil.WriteFile(strings.TrimSuffix(outputFile, ".gen.go")+"_test.go", []byte(codegentest), os.ModePerm); err != nil {
+		formatted, err := format.Source(codegentest, format.Options{
+			LangVersion: "1.16.2",
+		})
+		if err != nil {
+			fmt.Println("Failed to format generated code tests:", err)
+			os.Exit(1)
+		}
+		if err := ioutil.WriteFile(strings.TrimSuffix(outputFile, ".gen.go")+"_test.go", formatted, os.ModePerm); err != nil {
 			fmt.Println("Failed to write enum codegen tests to the specified file:", err)
 			os.Exit(1)
 		}
