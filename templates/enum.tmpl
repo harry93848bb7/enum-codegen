@@ -11,7 +11,7 @@ func (x {{.Name}}) String() string {
 
 // Scan implements sql.Scanner so {{.Name}} can be read from databases transparently.
 func (x *{{.Name}}) Scan(value interface{}) error {
-	db := value.([]uint8)
+	db := value.(string)
 	*x = map[string]{{.Name}}{ {{range $i, $e := .Enums}}{{"\n            "}}"{{$e}}": {{$e}},{{end}}
 	}[string(db)]
 	return nil
