@@ -33,5 +33,5 @@ func (x *{{.Name}}) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, &j); err != nil {
 		return err
 	}
-	return x.Scan([]uint8((fmt.Sprintf("{{.Name}}%s", strings.Title(j)))))
+	return x.Scan((fmt.Sprintf("{{.Name}}%s", strings.Title(j))))
 }
